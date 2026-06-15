@@ -12,10 +12,29 @@
 #     shield: reviung41
 #
 ---
-include:
-  - board: nice_nano_V2
-    shield: corne_left
-  - board: nice_nano_V2
-    shield: corne_right
-  - board: nice_nano_V2
-    shield: settings_reset
+name: Build Corne Nice Nano V2
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ZMK Firmware
+        uses: zmkfirmware/zmk-build-action@v2
+        with:
+          config: .
+          board: nice_nano_v2
+          shield: corne_left
+          output-name: corne_left-nice_nano_v2
+      - name: Build Right Half
+        uses: zmkfirmware/zmk-build-action@v2
+        with:
+          config: .
+          board: nice_nano_v2
+          shield: corne_right
+          output-name: corne_right-nice_nano_v2
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./firmware/*.uf2
